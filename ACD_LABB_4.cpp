@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <windows.h>
 #include <cmath>
 #include <conio.h>
 using namespace std;
@@ -40,8 +41,13 @@ class LinkedList {
     void push_front(hihi data);
     void push_back(hihi data);
 
+    void spisok();
+    void kosips();
+
     void pop_front();
     void pop_back();
+
+    void clear();
 
     int getSize() {
         return Size;
@@ -52,6 +58,8 @@ class LinkedList {
     void insert(int index, hihi data); //вставка мєжду елементами
 
     void erase(int index); //удаляєм конкретний елемент
+
+    void findMinMaxDebts();
 
 
 };
@@ -66,9 +74,7 @@ LinkedList<hihi>::LinkedList() { //конструктор лінкід ліст
 
 template<typename hihi>
 LinkedList<hihi>::~LinkedList() { //діструктор лол
-    while (head != nullptr) {
-        pop_front();
-    }
+   clear();
 }
 
 
@@ -85,6 +91,7 @@ void LinkedList<hihi>::push_front(hihi data) { //впіхнуть елемент
         tail = ptr;
         head = ptr;
     }
+    head = ptr;
     Size++;
 }
 
@@ -99,7 +106,48 @@ void LinkedList<hihi>::push_back(hihi data) { //впіхнуть елемент 
         head = ptr;
         tail = ptr;
     }
+    tail = ptr;
     Size++;
+}
+
+template<typename hihi>
+void LinkedList<hihi>::spisok() {
+    Node<hihi> *current = head;
+    int i = 0;
+    while (current != nullptr) {
+        cout << i+1  << "-й елемент " << endl;
+        cout << "-------------------------------" << endl;
+        cout << "Факультет: ";
+        cout << current->data.name << " " << endl;
+        cout << "Рік: ";
+        cout << current->data.year << " " << endl;
+        cout << "Заборгованості: ";
+        cout << current->data.debts << " " << endl;
+        cout << "-------------------------------" << endl;
+
+        i++;
+        current = current->next;
+    }
+}
+
+
+template<typename hihi>
+void LinkedList<hihi>::kosips() {
+    Node<hihi> *current = tail;
+    int i = 0;
+    while (current != nullptr) {
+        cout << i+1  << "-й елемент " << endl;
+        cout << "-------------------------------" << endl;
+        cout << "Заборгованості: ";
+        cout << current -> data.debts << " " << endl;
+        cout << "Рік: ";
+        cout << current->data.year << " " << endl;
+        cout << "Факультет: ";
+        cout << current->data.name << " " << endl;
+        cout << "-------------------------------" << endl;
+        i++;
+        current = current->prev;
+    }
 }
 
 template<typename hihi>
@@ -137,6 +185,13 @@ void LinkedList<hihi>::pop_back() {
     tail = ptr;
     Size--;
 
+}
+
+template<typename hihi>
+void LinkedList<hihi>::clear() {
+    while (Size) {
+        pop_front();
+    }
 }
 
 template<typename hihi>
@@ -194,50 +249,137 @@ void LinkedList<hihi>::erase(int index) {
     delete ptr; //видалили промєжуточний елемент
 }
 
+template<typename hihi>
+void LinkedList<hihi>::findMinMaxDebts() {
+    if (head == nullptr) {
+        return;
+    }
+    Node<hihi> *current = head;
+    int MAXIM = current->data.debts;
+    int MINITA = current->data.debts;
+
+    string LYCHI_FAC = current->data.name;
+    string HYDSHI_FAC = current->data.name;
+
+    while (current != nullptr) {
+        if (current->data.debts > MAXIM) {
+            MAXIM = current->data.debts;
+            HYDSHI_FAC = current->data.name;
+        }
+        if (current->data.debts < MINITA) {
+            MINITA = current->data.debts;
+            LYCHI_FAC = current->data.name;
+        }
+        current = current->next;
+    }
+    cout << "Факультет з найбільшою кількістю боргів: " << HYDSHI_FAC << endl;
+    cout << "Кількість боргів: " << MAXIM << endl;
+    cout << "-----------------------" << endl;
+    cout << "Найтоповіший факультет з найменшою кількістю боргів: " << LYCHI_FAC << endl;
+    cout << "Кількість боргів: " << MINITA << endl;
+    cout << "-----------------------" << endl;
+}
+
 
 //-------------------------------------------------------------------------------------
 int main() {
     //string fac[] = {"Грифіндор", "Слизерін", "Рейвенклов", "Гафелпаф"};
-
+    FacultyRe pynktiki;
     LinkedList<FacultyRe> list;
-    char coi = '67';
+    char coi = '6';
+    cout << endl << endl;
+    cout << "Вітаю. Програма реалізує методи двозв'язного списку." << endl;
+    cout << endl;
     do {
-        cout << "Вітаю. Програма реалізує методи двозв'язного списку." << endl;
         cout << "--MENU--" << endl;
-        cout << "1. Створення порожнього списку." << endl;
-        cout << "2. Додати елемент в кінець списку." << endl;
-        cout << "3. Видалити елемент з кінця списку" << endl;
-        cout << "4. Перегляд списку" << endl;
-        cout << "5. Очистити весь список" << endl;
+        cout << "1. Додати елемент в кінець списку." << endl;
+        cout << "2. Видалити елемент з кінця списку" << endl;
+        cout << "3. Перегляд списку" << endl;
+        cout << "4. Очистити весь список" << endl;
+        cout << "5. Визначити факультет з мінімальною та максимальною заборгованістю" << endl;
         cout << "0. Вийти" << endl;
 
         cin >> coi;
-        cout << "Автоматично додано елемент 67" << endl;
         switch (coi) {
-            case '1':
+            //---------------------------------------------------
+            case '1':{
+                cout << "Введіть назву факультету:" << endl;
+                cin >> pynktiki.name;
+                cout << "Введіть рік: " << endl;
+                cin >> pynktiki.year;
+                cout << "Введіть кількість заборгованностей: " << endl;
+                cin >> pynktiki.debts;
+                list.push_back(pynktiki);
+                cout <<"Ваші важливі дані успішно додано."<<endl;
+                }
+                break;
+            //---------------------------------------------------
+                case '2': {
+                    list.pop_back();
+                    cout << "Останній елемент було успішно видалено!" << endl;
+                }
 
                 break;
 
-                case '2':
-
-                break;
+            //--------------------------------------------------
                 case '3':
-
+                if (list.getSize() == 0) {
+                    cout << "У вас порожній список!";
+                    cout << endl;
+                    continue;
+                }
+                cout << "Список у прямому порядку:" << endl;
+                list.spisok();
+                cout << "Список у звоторньому напрямку:" << endl;
+                list.kosips();
                 break;
+
+            //----------------------------------------------
                 case '4':
-
+                if (list.getSize() == 0) {
+                    cout << "У вас порожній список!" << endl;
+                    cout << endl;
+                    continue;
+                }
+                list.clear();
+                cout << "Список успішно очищено!" << endl;
                 break;
-                case '5':
-
+            //----------------------------------------------
+            case '5':
+                list.findMinMaxDebts();
                 break;
+
+            //---------------------------------------------
+                case '0':
+                if (coi == 0) {
+                    exit(0);
+                }
+                break;
+            //--------------------------------------------
+
             default:
                 cout << "Шо ти вводиш, урод? Хапні гавна." << endl;
+                int i = 0;
+                short ii = 0;
+                while (i != 3) {
+                    Sleep(200);
+                    cout << "installing Wacatac......" << endl;
+                    cout << "installing WannaCry...." << endl;
+                    Sleep(50);
+                    cout << "installing Beast...." << endl;
+
+                    i++;
+                }
+                Sleep(500);
+                while (ii != 500) {
+                    Sleep(20);
+                    cout << "delete system.32...." << endl;
+                    ii++;
+                }
                 exit(1);
                 break;
-
         }
-
-
     }while(coi != '0');
+
     return 0;
 }
