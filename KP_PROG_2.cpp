@@ -23,13 +23,20 @@ arenka * arena_new(uint64_t size) {
     if (a == nullptr) {
         return nullptr;
     }
-    a->memory = new uint8_t[size];
+    a->memory = new(std::nothrow) uint8_t[size];
+    if (a->memory == nullptr) { //не вистачило памяті
+        delete a;
+        return nullptr;
+    }
     a->size = size;
     a->offset = 0;
     return a;
 }
 
 void* arena_alloc(arenka* a, uint64_t size) {
+    if (a == nullptr || size == 0) {
+        return nullptr;
+    }
     if (a->offset + size > a->size) { //сайз -кусок який просять виділити. а-сайз - розмір всієї арени
         return nullptr;
     }
@@ -91,7 +98,7 @@ void save_tga(const char* filename, uint32_t shirina, uint32_t visota, Pixel** p
     fout.write((char*)header, 18);
     for (uint32_t i = 0; i < visota; i++) {
         for (uint32_t j = 0; j < shirina; j++) {
-            fout.write((char*)&pixels[j][i].rgba, sizeof(uint32_t)); //і це шіріна, йотий це вісота
+            fout.write(reinterpret_cast<char *>(&pixels[j][i].rgba), sizeof(uint32_t)); //і це шіріна, йотий це вісота
         }
     }
     fout.close();
