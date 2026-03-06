@@ -17,8 +17,8 @@ class Stack {
     void push(lol data);
     lol top(); //значення елементу не видаляючи його
     void pop(); //видалення
-    bool empty()const; //перевірка пустий лі стек
-    int getSize()const;
+    [[nodiscard]] bool empty()const; //перевірка пустий лі стек
+    [[nodiscard]] int getSize()const;
     void clear();
     void print();
 
@@ -30,7 +30,8 @@ private:
         public:
         Node *pNext;
         lol data;
-        Node(lol data = lol(), Node *pNext = nullptr) {
+
+        explicit Node(lol data = lol(), Node *pNext = nullptr) {
             this->data = data;
             this->pNext = pNext;
         }

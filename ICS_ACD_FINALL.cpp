@@ -13,8 +13,8 @@ using namespace std;
     struct Toy{
         string name;
         string postavjik;
-        double price;
-        tm date;
+        double price{};
+        tm date{};
 
     };
 
@@ -33,6 +33,11 @@ class LinkedListt {
     void pop_back();
     void pop_seredina(int index);
     //-----------------------------------------
+
+    [[nodiscard]] int GetSize() const {
+        return Size;
+    }
+
     void print();
     void search(Toy data);
     void filter(Toy data);
@@ -43,7 +48,8 @@ class LinkedListt {
     public:
         Node *pNext;
         Toy data;
-        Node(Toy data = Toy(), Node *pNext = nullptr) {
+
+        explicit Node(const Toy &data = Toy(), Node *pNext = nullptr) {
             this->data = data;
             this->pNext = pNext;
         }
@@ -64,6 +70,17 @@ void LinkedListt::push_front(Toy data) {
 }
 
 void LinkedListt::push_back(Toy data) {
+    if (head == nullptr) {
+        head = new Node(data);
+    }
+    else {
+        Node *current = this->head;
+        while (current->pNext != nullptr) {
+            current = current->pNext;
+        }
+        current->pNext = new Node(data);
+    }
+    Size++;
 }
 
 void LinkedListt::push_seredina(int index, Toy data) {
@@ -79,6 +96,15 @@ void LinkedListt::pop_seredina(int index) {
 }
 
 void LinkedListt::print() {
+    Node *current = head;
+    while (current != nullptr) {
+        cout << "Назва: " << current->data.name << "| Постачальник: "<< current->data.postavjik
+            << " | Ціна: " << current->data.price << " | Дата: " << current->data.date.tm_mday<< "." <<
+                current->data.date.tm_mon + 1 << "." << current->data.date.tm_year + 1900 << endl;
+
+        current = current->pNext;
+
+    }
 }
 
 void LinkedListt::search(Toy data) {
@@ -133,4 +159,7 @@ void CreateTestFile() {
 int main() {
 
     CreateTestFile();
+    LinkedListt list;
+    LoadFromFile(list);
+    list.print();
 }
