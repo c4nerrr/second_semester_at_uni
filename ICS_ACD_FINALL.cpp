@@ -2,13 +2,12 @@
 // Created by c4ner on 3/6/2026.
 //
 #include <iostream>
-#include <ctime>
+#include <limits>
 
 //перед початком інформую:
 //Формат строк у файлі: Назва Поставщік Ціна День Місяць Рік.
 //----------------------------------------
 #include <fstream>
-#include <utility>
 using namespace std;
 //-----------------------------------------
     struct Toy{
@@ -16,7 +15,6 @@ using namespace std;
         string postavjik;
         double price{};
         tm date{};
-
     };
 
 //-----------------------------------------
@@ -26,14 +24,16 @@ class LinkedListt {
    LinkedListt();
     ~LinkedListt();
     //--------------------------------------------
-    void push_front(Toy data);
-    void push_back(Toy data);
-    void push_seredina(int index, Toy data);
+    void push_front(const Toy &data);
+    void push_back(const Toy &data);
+    void push_seredina(int index, const Toy& data);
     //------------------------------------------
     void pop_front();
     void pop_back();
     void pop_seredina(int index);
-    Toy& operator[](const int index);
+    Toy& operator[](int index) const;
+
+    void clear();
     //-----------------------------------------
 
     [[nodiscard]] int GetSize() const {
@@ -66,14 +66,15 @@ LinkedListt::LinkedListt() {
 }
 
 LinkedListt::~LinkedListt() {
+    clear();
 }
 
-void LinkedListt::push_front(Toy data) {
+void LinkedListt::push_front(const Toy &data) {
         head = new Node(data, head);
     Size++;
 }
 
-void LinkedListt::push_back(Toy data) {
+void LinkedListt::push_back(const Toy &data) {
     if (head == nullptr) {
         head = new Node(data);
     }
@@ -87,9 +88,9 @@ void LinkedListt::push_back(Toy data) {
     Size++;
 }
 
-void LinkedListt::push_seredina(int index, Toy data) {
+void LinkedListt::push_seredina(int index, const Toy& data) {
     if (head == nullptr || index == 0){
-        push_front(std::move(data));
+        push_front(data);
         return;
     }
         Node *current = head;
@@ -126,7 +127,7 @@ void LinkedListt::pop_back() {
     Size--;
 }
 
-void LinkedListt::pop_seredina(int index) {
+void LinkedListt::pop_seredina(const int index) {
     if (head == nullptr) {
         return;
     }
@@ -150,7 +151,7 @@ void LinkedListt::pop_seredina(int index) {
     Size--;
 }
 
-Toy& LinkedListt::operator[](const int index) {
+Toy& LinkedListt::operator[](const int index) const {
     int count = 0;
     Node *current = this->head;
     while (current != nullptr) {
@@ -162,6 +163,13 @@ Toy& LinkedListt::operator[](const int index) {
     }
      throw out_of_range("Індекс більше за розмір списку!!!");
 }
+
+void LinkedListt::clear() {
+    while (Size) {
+        pop_front();
+    }
+}
+
 void LinkedListt::print() const {
     Node *current = head;
     while (current != nullptr) {
@@ -307,9 +315,175 @@ void CreateTestFile() {
 
 
 int main() {
-
-    CreateTestFile();
     LinkedListt list;
     LoadFromFile(list);
+
+    Toy igryshki;
+
+    cout << "Ваш список наведено нижче: " << endl;
     list.print();
+
+    char coi = '1';
+    do {
+        cout << "-----MENU-----" << endl;
+        cout << "1. Видалити елемент" << endl;
+        cout << "2. Додати елемент" << endl;
+        cout << "3. Надрукувати вміст списку" << endl;
+        cout << "4. Пошук за постачальником та датою надходження" << endl;
+        cout << "5. Сортування за датою надходження, потім за ціною" << endl;
+        cout << "6. Вивести іграшки, що надійшли ПІСЛЯ конкретної дати." << endl;
+        cout << "7. Видалити весь список" << endl;
+        cout << "----------------------------------------------------" << endl;
+        cout << "0. Вийти" << endl;
+
+        cin >> coi;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        switch (coi) {
+            case '0':
+                return 0;
+                break;
+                //---------------------------------------------------------
+                case '1': {
+                    char case_1 = '9';
+                    cout << endl;
+                    cout << "----------------------------------------------------" << endl;
+                    cout << "Оберіть як видалити елемент: " << endl;
+                    cout << "1. Видалити елемент починаючи спочатку" << endl;
+                    cout << "2. Видалити елемент починаючи з кінця" << endl;
+                    cout << "3. Видалити певний обраний елемент" << endl;
+                    cout << "----------------------------------------------------" << endl;
+                    cout << "0. Повернутися в меню" << endl;
+
+                    cin >> case_1;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    switch (case_1) {
+                        case '0': //NOLINT
+                            break;
+                            case '1':
+                            list.pop_front();
+                            cout << "----------------------------------------------------" << endl;
+                            cout << "Успішно очищений перший елемент!" << endl;
+                            cout << "----------------------------------------------------" << endl;
+                            break;
+                            case '2':
+                            list.pop_back();
+                            cout << "----------------------------------------------------" << endl;
+                            cout << "Успішно очищений перший елемент!" << endl;
+                            cout << "----------------------------------------------------" << endl;
+                            break;
+                            case '3': {
+                                unsigned short index = 0;
+                                cout << "----------------------------------------------------" << endl;
+                                cout << "Елемент під яким номером хочете видалити? " << endl;
+                                cin >> index;
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                list.pop_seredina(index);
+                                cout << "Успішно очищений перший елемент!" << endl;
+                                cout << "----------------------------------------------------" << endl;
+                            }
+                            break;
+                            default:
+                            exit(-1);
+                            break;
+                    }
+                }
+                break;
+                //-------------------------------------------------------------------
+                case '2': {
+                    char case_2 = '9';
+                    cout << endl;
+                    cout << "----------------------------------------------------" << endl;
+                    cout << "Оберіть як додати елемент: " << endl;
+                    cout << "1. Додати елемент спочатку" << endl;
+                    cout << "2. Додати елемент з кінця" << endl;
+                    cout << "3. Додати певний елемент" << endl;
+                    cout << "----------------------------------------------------" << endl;
+                    cout << "0. Повернутися в меню" << endl;
+
+                    cin >> case_2;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    cout << "Введіть назву іграшки (БЕЗ ПРОБІЛІВ!): " << endl;
+                    cin >> igryshki.name;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    cout << "Введіть постачальника(БЕЗ ПРОБІЛІВ): " << endl;
+                    cin >> igryshki.postavjik;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    cout << "Введіть ціну(напр: 799.99/409.50): " << endl;
+                    cin >> igryshki.price;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    cout << "Введіть рік коли була випущена іграшка(ТІЛЬКИ ЦИФРА): " << endl;
+                    cin >> igryshki.date.tm_year;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    if (igryshki.date.tm_year > 2026) {
+                        cerr << "Ти адекватний? 2026 на дворі. Який " << igryshki.date.tm_year << " ???"<<endl;
+                        break;
+                    }
+
+                    cout << "Введіть місяць(ТІЛЬКИ ЦИФРА(напр: 09)): " << endl;
+                    cin >> igryshki.date.tm_mon;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    if (igryshki.date.tm_mon > 12) {
+                        cerr << "Ти бляха муха реал тупий чи просто недоразвітий? Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
+                        break;
+                    }
+
+                    cout << "Введіть день(ТІЛЬКИ ЦИФРА(напр: 09))" << endl;
+                    cin >> igryshki.date.tm_mday;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    if (igryshki.date.tm_mday > 31) {
+                        cerr << "Будь ласка перестань знущатись надімною. Я викидую тебе в меню, це останнє попередження." << endl;
+                        break;
+                    }
+                    switch (case_2) {
+                        case '0': //NOLINT
+                            break;
+                            case '1':
+                            list.push_front(igryshki);
+                            cout << "Успішно додано!" << endl;
+                            cout << "----------------------------------------------------" << endl;
+                            break;
+                            case '2':
+                            list.push_back(igryshki);
+                            cout << "Успішно додано!" << endl;
+                            cout << "----------------------------------------------------" << endl;
+                            break;
+                            case '3': {
+                                unsigned short index = 0;
+                                cout << "Під яким номером хочете додати дані? " << endl;
+                                cin >> index;
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                                list.push_seredina(index, igryshki);
+                            }
+                            break;
+                            default:
+                            exit(-1);
+                            break;
+
+                    }
+
+
+                }
+                break;
+                //------------------------------------------------------------------
+                case '3':
+                break;
+                case '4':
+                break;
+                case '5':
+                break;
+                case '6':
+                break;
+                default:
+                exit(-1);
+                break;
+        }
+
+    } while(coi != '0');
+    return 0;
 }
