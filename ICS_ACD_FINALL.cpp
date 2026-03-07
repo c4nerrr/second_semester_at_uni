@@ -175,7 +175,7 @@ void LinkedListt::print() const {
     while (current != nullptr) {
         cout << "Назва: " << current->data.name << "| Постачальник: "<< current->data.postavjik
             << " | Ціна: " << current->data.price << " | Дата: " << current->data.date.tm_mday<< "." <<
-                current->data.date.tm_mon + 1 << "." << current->data.date.tm_year + 1900 << endl;
+                current->data.date.tm_mon << "." << current->data.date.tm_year << endl;
 
         current = current->pNext;
     }
@@ -190,6 +190,9 @@ void LinkedListt::search(const string &TargetPostavjik, int targetDay, int Targe
             cout << current->data.name << endl;
         }
         current = current->pNext;
+    }
+    if (current == nullptr || current->pNext == nullptr) {
+        cerr << "Не вдалося нічого знайти! " << endl;
     }
 }
 
@@ -342,7 +345,6 @@ int main() {
         switch (coi) {
             case '0':
                 return 0;
-                break;
                 //---------------------------------------------------------
                 case '1': {
                     char case_1 = '9';
@@ -378,6 +380,7 @@ int main() {
                                 cout << "Елемент під яким номером хочете видалити? " << endl;
                                 cin >> index;
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                index--;
                                 list.pop_seredina(index);
                                 cout << "Успішно очищений перший елемент!" << endl;
                                 cout << "----------------------------------------------------" << endl;
@@ -456,29 +459,110 @@ int main() {
                                 unsigned short index = 0;
                                 cout << "Під яким номером хочете додати дані? " << endl;
                                 cin >> index;
+                                index--;
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
                                 list.push_seredina(index, igryshki);
+                                cout << "Успішно додано!" << endl;
+                                cout << "----------------------------------------------------" << endl;
                             }
                             break;
+
                             default:
                             exit(-1);
                             break;
-
                     }
-
-
                 }
                 break;
                 //------------------------------------------------------------------
+
                 case '3':
+                cout << "----------------------------------------------------" << endl;
+                list.print();
+                cout << "----------------------------------------------------" << endl;
                 break;
+                //------------------------------------------------------------------
+
                 case '4':
+                cout << "Введіть поставщика: " << endl;
+                cin >> igryshki.postavjik;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                cout << "Введіть рік коли була випущена іграшка(ТІЛЬКИ ЦИФРА): " << endl;
+                cin >> igryshki.date.tm_year;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (igryshki.date.tm_year > 2026) {
+                    cerr << "Ти адекватний? 2026 на дворі. Який " << igryshki.date.tm_year << " ???"<<endl;
+                    break;
+                }
+
+                cout << "Введіть місяць(ТІЛЬКИ ЦИФРА(напр: 09)): " << endl;
+                cin >> igryshki.date.tm_mon;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (igryshki.date.tm_mon > 12) {
+                    cerr << "Ти бляха муха реал тупий чи просто недоразвітий? Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
+                    break;
+                }
+
+                cout << "Введіть день(ТІЛЬКИ ЦИФРА(напр: 09))" << endl;
+                cin >> igryshki.date.tm_mday;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (igryshki.date.tm_mday > 31) {
+                    cerr << "Будь ласка перестань знущатись надімною. Я викидую тебе в меню, це останнє попередження." << endl;
+                    break;
+                }
+                list.search(igryshki.postavjik, igryshki.date.tm_mday, igryshki.date.tm_mon, igryshki.date.tm_year);
+                cout << "----------------------------------------------------" << endl;
                 break;
+
+                //--------------------------------------------------------------------------
+
                 case '5':
+                cout << "----------------------------------------------------" << endl;
+                list.sort();
+                cout << "Успішно відсортовано!" << endl;
+                cout << "----------------------------------------------------" << endl;
                 break;
+
+
                 case '6':
+                cout << "----------------------------------------------------" << endl;
+                cout << "Введіть рік по якому треба знайти(ТІЛЬКИ ЦИФРА): " << endl;
+                cin >> igryshki.date.tm_year;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (igryshki.date.tm_year > 2026) {
+                    cerr << "Ти адекватний? 2026 на дворі. Який " << igryshki.date.tm_year << " ???"<<endl;
+                    break;
+                }
+
+                cout << "Введіть місяць(ТІЛЬКИ ЦИФРА(напр: 09)): " << endl;
+                cin >> igryshki.date.tm_mon;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (igryshki.date.tm_mon > 12) {
+                    cerr << "Ти бляха муха реал тупий чи просто недоразвітий? Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
+                    break;
+                }
+
+                cout << "Введіть день(ТІЛЬКИ ЦИФРА(напр: 09))" << endl;
+                cin >> igryshki.date.tm_mday;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (igryshki.date.tm_mday > 31) {
+                    cerr << "Будь ласка перестань знущатись надімною. Я викидую тебе в меню, це останнє попередження." << endl;
+                    break;
+                }
+
+                list.filter(igryshki.date.tm_mday, igryshki.date.tm_mon, igryshki.date.tm_year);
+                cout << "----------------------------------------------------" << endl;
                 break;
+
+                case '7':
+                cout << "----------------------------------------------------" << endl;
+                list.clear();
+                cout << "Успішно очищено!" << endl;
+                cout << "----------------------------------------------------" << endl;
+                break;
+
+
                 default:
                 exit(-1);
                 break;
