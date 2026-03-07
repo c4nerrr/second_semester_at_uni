@@ -175,7 +175,7 @@ void LinkedListt::print() const {
     while (current != nullptr) {
         cout << "Назва: " << current->data.name << "| Постачальник: "<< current->data.postavjik
             << " | Ціна: " << current->data.price << " | Дата: " << current->data.date.tm_mday<< "." <<
-                current->data.date.tm_mon << "." << current->data.date.tm_year << endl;
+                current->data.date.tm_mon+1 << "." << current->data.date.tm_year+1900 << endl;
 
         current = current->pNext;
     }
@@ -426,14 +426,18 @@ int main() {
                         cerr << "Ти адекватний? 2026 на дворі. Який " << igryshki.date.tm_year << " ???"<<endl;
                         break;
                     }
+                    igryshki.date.tm_year -= 1900;
 
                     cout << "Введіть місяць(ТІЛЬКИ ЦИФРА(напр: 09)): " << endl;
                     cin >> igryshki.date.tm_mon;
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     if (igryshki.date.tm_mon > 12) {
-                        cerr << "Ти бляха муха реал тупий чи просто недоразвітий? Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
+                        cerr << "Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
                         break;
                     }
+                    igryshki.date.tm_mon--;
+
+
 
                     cout << "Введіть день(ТІЛЬКИ ЦИФРА(напр: 09))" << endl;
                     cin >> igryshki.date.tm_mday;
@@ -500,9 +504,10 @@ int main() {
                 cin >> igryshki.date.tm_mon;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 if (igryshki.date.tm_mon > 12) {
-                    cerr << "Ти бляха муха реал тупий чи просто недоразвітий? Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
+                    cerr << "Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
                     break;
                 }
+
 
                 cout << "Введіть день(ТІЛЬКИ ЦИФРА(напр: 09))" << endl;
                 cin >> igryshki.date.tm_mday;
@@ -539,7 +544,7 @@ int main() {
                 cin >> igryshki.date.tm_mon;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 if (igryshki.date.tm_mon > 12) {
-                    cerr << "Ти бляха муха реал тупий чи просто недоразвітий? Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
+                    cerr << "Ти вважаєш що в 1 році " << igryshki.date.tm_mon << " місяців?????" << endl;
                     break;
                 }
 
