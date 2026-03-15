@@ -9,7 +9,7 @@ arenka* arena_new(uint64_t size) {
     if (size == 0) {
         return nullptr;
     }
-    arenka* a = new(std::nothrow) arenka;//носров від краша сейвіт
+    auto a = new(std::nothrow) arenka;//носров від краша сейвіт
     if (a == nullptr) {
         return nullptr;
     }

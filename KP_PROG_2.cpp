@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <new> //для std::nothrow щоб не було bad_alloc щоб не крашити прогу
-
 using namespace std;
 //------------------------------------------------------------------------------------------------------
 
@@ -68,7 +67,7 @@ void create_color (Pixel** pixels, uint32_t shirina, uint32_t visota) {
             pixels[i][j].chan.r = i+j;
             pixels[i][j].chan.g = j+i;
             pixels[i][j].chan.b = i+j;
-            pixels[i][j].chan.a = 255; //шоб ця дрянь не була прозорою
+            pixels[i][j].chan.a = i+j; //шоб ця дрянь не була прозорою
         }
     }
 };
@@ -95,7 +94,7 @@ void save_tga(const char* filename, uint32_t shirina, uint32_t visota, Pixel** p
     if (fout.is_open() == false) {
         return;
     }
-    fout.write((char*)header, 18);
+    fout.write(reinterpret_cast<char *>(header), 18);
     for (uint32_t i = 0; i < visota; i++) {
         for (uint32_t j = 0; j < shirina; j++) {
             fout.write(reinterpret_cast<char *>(&pixels[j][i].rgba), sizeof(uint32_t)); //і це шіріна, йотий це вісота
@@ -108,9 +107,9 @@ int main(int argc, char const *argv[]) {
     arenka* my_arenna = arena_new(3000000);
     uint32_t shirina = 700;
     uint32_t visota = 900;
-    auto pix = (Pixel**)arena_alloc(my_arenna, shirina*sizeof(Pixel*)); //авто шоб авоід дублікейт нейм
+    auto pix = static_cast<Pixel **>(arena_alloc(my_arenna, shirina * sizeof(Pixel *))); //авто шоб авоід дублікейт нейм
     for (uint32_t i = 0; i < shirina; ++i) {
-        pix[i] = (Pixel*)arena_alloc(my_arenna, visota*sizeof(Pixel));
+        pix[i] = static_cast<Pixel *>(arena_alloc(my_arenna, visota * sizeof(Pixel)));
         if (pix[i] == nullptr) {
             arena_free(my_arenna);
             cerr << "Memory allocation failed" << endl;

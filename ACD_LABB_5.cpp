@@ -24,6 +24,7 @@ class Stack {
 
     //13 варіант завдання функція:
     void TwoChar();
+    void vidalenie();
 
 private:
     class Node {
@@ -135,6 +136,25 @@ void Stack<lol>::TwoChar() {
     cout <<"---------------------------------" << endl;
 }
 
+template<typename lol>
+void Stack<lol>::vidalenie() {
+        Stack<lol> tempStack;
+        while (head != nullptr) {
+            lol currentData = head->data;
+            pop();
+
+            if (currentData.length() % 2 == 0) {
+                tempStack.push(currentData);
+                cout << currentData << endl;
+            }
+        }
+        while (tempStack.head != nullptr) {
+            push(tempStack.head->data);
+            tempStack.pop();
+        }
+        cout <<"----------------------------------" << endl;
+    }
+
 
 int main () {
     Stack<string> stack;
@@ -149,6 +169,7 @@ int main () {
         cout << "6. Очистити весь стек" << endl;
         cout <<"---------------------------------" << endl;
         cout << "7. Вивести елементи стеку, що мають тільки 2 символа" << endl;
+        cout << "8. Вивести " << endl;
         cout << "0. Вийти" << endl;
         cin >> choi;
 
@@ -181,6 +202,9 @@ int main () {
                 break;
                 case '7':
                 stack.TwoChar();
+                break;
+                case '8':
+                stack.vidalenie();
                 break;
                 case '0':
                 break;
