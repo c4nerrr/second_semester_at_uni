@@ -230,5 +230,6 @@ int main () {
                 exit(-1);
         }
     }while (ch != '0');
+    cout << "Провєрк" << endl;
 return 0;
 }
