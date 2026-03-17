@@ -27,6 +27,8 @@ class LList {
 
     void calcPensCost();
 
+    void ydalenie_vid();
+
 
     private:
     class Node {
@@ -159,6 +161,18 @@ void LList<blin>::calcPensCost() {
     }
 }
 
+template<typename blin>
+void LList<blin>::ydalenie_vid() {
+    int currentSize = Size;
+    for (int i = 0; i < currentSize; ++i) {
+        blin temp_data = head->data;
+        dequeue();
+        if (temp_data.cena >= 0) {
+            enqueue(temp_data);
+        }
+    }
+}
+
 
 int main () {
     cout << "Програма створена для реалзіації алгоритму Черги." << endl;
@@ -179,6 +193,7 @@ int main () {
         cout << "     ------------------" << endl;;
         cout << " 0. Вихід.    " << endl;
         cout << " 7. Дод.функція: порахувати суму товарів з назвою 'Ручка кулькова'. " << endl;
+        cout << " 8.Видалення від'ємних елементів." << endl;
 
         cin >> ch;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -209,6 +224,7 @@ int main () {
                 break;
                 case '5':
                 listochek.print();
+                break;
 
                 case '6':
                 listochek.clear();
@@ -223,6 +239,12 @@ int main () {
 
 
                 case '0': //NOLINT
+                break;
+
+            case '8':
+                listochek.ydalenie_vid();
+                cout << "     ------------------" << endl;
+                cout << "Від'ємні елементи успішно видалені!" << endl;
                 break;
 
                 default:
