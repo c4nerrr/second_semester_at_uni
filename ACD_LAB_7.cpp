@@ -10,7 +10,6 @@ template<typename vetochka>
 class Derevo {
 
     private:
-
     class BTNode {
         public:
         BTNode* l;
@@ -30,6 +29,8 @@ class Derevo {
 
 
     void clear_recursive(BTNode* &root);
+
+    void prosmotr_recursive(BTNode* &root);
 public:
     Derevo();
     ~Derevo();
@@ -41,14 +42,23 @@ public:
 
     void proverka();
 
-    void prosmotr();
+    void prosmotrr() {
+        if (root == nullptr) {
+            proverka();
+        }
+        else {
+            cout << "------------------" << endl;
+            cout << "Елементи дерева: " << endl;
+            prosmotr_recursive(root);
+            cout << "------------------" << endl;
+        }
+    }
+
     void vivod();
 
     void dop_fynk(vetochka data);
 
-    //-----------
-    void enqueue(const vetochka& data);
-
+    //void enqueue(const vetochka& data);
 
 
 };
@@ -60,7 +70,9 @@ Derevo<vetochka>::Derevo() : Size(0), root(nullptr) {
 
 template<typename vetochka>
 Derevo<vetochka>::~Derevo() {
-
+    while (Size) {
+        clear();
+    }
 }
 
 template<typename vetochka>
@@ -88,6 +100,16 @@ void Derevo<vetochka>::clear_recursive(BTNode *&root) {
         delete root;
         root = nullptr;
     }
+}
+
+template<typename vetochka>
+void Derevo<vetochka>::prosmotr_recursive(BTNode *&root) {
+    if (root == nullptr) {
+        return;
+    }
+    prosmotr_recursive(root->l);
+    cout << root->data << " ";
+    prosmotr_recursive(root->r);
 }
 
 template<typename vetochka>
@@ -146,9 +168,7 @@ void Derevo<vetochka>::proverka() {
     }
 }
 
-template<typename vetochka>
-void Derevo<vetochka>::prosmotr() {
-}
+
 
 template<typename vetochka>
 void Derevo<vetochka>::vivod() {
