@@ -3,6 +3,7 @@
 //
 #include <iostream>
 #include <limits>
+#include <string.h>
 
 //перед початком інформую:
 //Формат строк у файлі: Назва Поставщік Ціна День Місяць Рік.
@@ -44,6 +45,9 @@ class LinkedListt {
     void search(const string &TargetPostavjik,int targetDay, int TargetMonth, int TargetYear) const;
     void filter(int targetDay, int targetMonth, int targetYear) const;
     void sort();
+
+
+    void seredina();
 
     private:
     class Node {
@@ -274,6 +278,16 @@ void LinkedListt::sort() { //бульбашка
     }while (swapped);
 }
 
+void LinkedListt::seredina() {
+    if (head == nullptr) {
+        return;
+    }
+    Node *curr = head;
+    Node *next = head->pNext;
+    while (next != nullptr) {
+
+    }
+}
 
 
 //----------------------------------------------------------------------------
