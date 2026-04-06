@@ -38,9 +38,13 @@ bool hash_tabl::hash_map_has_key(const std::string &code) const {
 
 void hash_tabl::has_map_at(const std::string &codik) const {
     const auto index = hash_code(codik);
+    short count = 0;
     for (const auto &[code, name, price]: table[index]) {
+        count++;
         if (codik == code) {
-            cout << "Товар: " << name << "  Ціна: " << price << endl;
+            cout << "Name: " << name << "  Price: " << price << endl;
+            cout << "Count: " << count << endl;
+            return;
         }
     }
 }
@@ -48,6 +52,31 @@ void hash_tabl::has_map_at(const std::string &codik) const {
 void hash_tabl::hash_clear() {
     for (auto & i : table) {
         i.clear();
+    }
+}
+
+void hash_tabl::print_table() const {
+    int index = 0;
+    for (const auto &i: table) {
+        cout << "[" << index << "]" << endl;
+        for (const auto &[code, name, price]: i) { //структурне зв'язування С++
+            cout << "Code|Name|Price:" <<  code << "  " << name << "  " << price << "  " << endl;
+        }
+        cout << endl;
+        index++;
+    }
+}
+
+void hash_tabl::print_colissions() const{
+   int index = 0;
+    for (const auto &i: table) {
+        if (i.size() > 1) {
+            cout << "[" << index << "]" << endl;
+            for (const auto &[code, name, price]: i) {
+                cout << "Code|Name|Price:" <<  code << "  " << name << "  " << price << "  " << endl;
+            }
+        }
+        index++;
     }
 }
 
@@ -69,12 +98,15 @@ int main() {
     cin >> cifra;
     hash_tabl my_table(cifra);
     bool flag = false;
+    bool is_loaded_2 = false;
     char gui = '8';
     do {
         cout << "---MENU---" << endl;
         cout << "1) Gener data file (20,1000,5000);" << endl;
         cout << "2) Load data in table " << endl;
         cout << "3) Find code && name && data" << endl;
+        cout << "4) Print table" << endl;
+        cout << "5) Print collision" << endl;
         cout << "------" << endl;
         cout << "0) Exit" << endl;
 
@@ -126,6 +158,7 @@ int main() {
                         }
                         fin.close();
                         cout << "Congratulations! Step is done." << endl;
+                        is_loaded_2 = true;
                     }
                     else {
                         cerr << "Error. Can't open file " << endl;
@@ -139,7 +172,7 @@ int main() {
                 break;
              //----------------------------------------------------------------
                 case '3': {
-                    if (flag == true) {
+                    if (flag == true && is_loaded_2 == true) {
                         string tovar_code;
                         cout << "Enter code tovara: " << endl;
                         cin >> tovar_code;
@@ -156,6 +189,28 @@ int main() {
                 }
                 break;
                 //------------------------------------------------------------
+                case '4': {
+                    if (flag == true && is_loaded_2 == true) {
+                        my_table.print_table();
+                    }
+                    else {
+                        cerr << "Invalid input! Your first step is Gener data file" << endl;
+                        break;
+                    }
+                }
+                break;
+                //------------------------------------------------------------
+                case '5': {
+                    if (flag == true && is_loaded_2 == true) {
+                        my_table.print_colissions();
+                    }
+                    else {
+                        cerr << "Invalid input! Your first step is Gener data file" << endl;
+                        break;
+                    }
+                }
+                break;
+                //--------------------------------------------------------------
                 case '0':
                 break;
                 //------------------------------------------------------------
@@ -166,4 +221,5 @@ int main() {
                 //-----------------------------------------------------------
         }
     }while (gui != '0');
+    return 0;
 }
