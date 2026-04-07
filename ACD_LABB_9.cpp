@@ -24,6 +24,10 @@ hash_tabl::~hash_tabl() {
 void hash_tabl::hash_map_insert(const std::string &code, const std::string &name, float price) {
   const auto index = hash_code(code);
     table[index].push_back({code, name, price});
+    total_rl++;
+    if (static_cast<float>(total_rl) / table_size >= 0.70) {
+        dop();
+    }
 }
 
 bool hash_tabl::hash_map_has_key(const std::string &code) const {
@@ -80,6 +84,19 @@ void hash_tabl::print_colissions() const{
     }
 }
 
+void hash_tabl::dop() {
+    const auto old_tabl = table;
+    table_size *= 2;
+    hash_clear();
+    table.resize(table_size,{});
+    total_rl = 0; //обнуляємо
+    for (const auto &i : old_tabl) {
+        for (const auto &[code, name, price]: i) {
+            hash_map_insert(code, name, price); //тотал_рл++
+        }
+    }
+}
+
 int hash_tabl::hash_code(const std::string &key) const {
  long long base = 0;
     for (const char c : key) {
@@ -107,6 +124,7 @@ int main() {
         cout << "3) Find code && name && data" << endl;
         cout << "4) Print table" << endl;
         cout << "5) Print collision" << endl;
+        cout << "6) Rehash" << endl;
         cout << "------" << endl;
         cout << "0) Exit" << endl;
 
@@ -210,7 +228,7 @@ int main() {
                     }
                 }
                 break;
-                //--------------------------------------------------------------
+                //---------------------------------------------------------
                 case '0':
                 break;
                 //------------------------------------------------------------
