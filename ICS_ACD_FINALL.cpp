@@ -3,8 +3,8 @@
 //
 #include <iostream>
 #include <limits>
-#include <string.h>
-
+#include <cstring>
+#include <iomanip>
 //перед початком інформую:
 //Формат строк у файлі: Назва Поставщік Ціна День Місяць Рік.
 //----------------------------------------
@@ -47,7 +47,8 @@ class LinkedListt {
     void sort();
 
 
-    void seredina();
+    void seredina() const;
+    void dop_igr() const;
 
     private:
     class Node {
@@ -177,9 +178,12 @@ void LinkedListt::clear() {
 void LinkedListt::print() const {
     Node *current = head;
     while (current != nullptr) {
-        cout << "Назва: " << current->data.name << "| Постачальник: "<< current->data.postavjik
-            << " | Ціна: " << current->data.price << " | Дата: " << current->data.date.tm_mday<< "." <<
-                current->data.date.tm_mon+1 << "." << current->data.date.tm_year+1900 << endl;
+        cout << "Назва: " << current->data.name
+             << " | Постачальник: "<< current->data.postavjik
+             << " | Ціна: " << current->data.price << " | Дата: "
+             << setfill('0') << setw(2) << current->data.date.tm_mday << "."
+             << setfill('0') << setw(2) << current->data.date.tm_mon + 1 << "."
+             << current->data.date.tm_year + 1900 << endl;
 
         current = current->pNext;
     }
@@ -278,15 +282,79 @@ void LinkedListt::sort() { //бульбашка
     }while (swapped);
 }
 
-void LinkedListt::seredina() {
+void LinkedListt::seredina() const {
+    if (head == nullptr) {
+        return;
+    }
+    LinkedListt averagesList; //новий спісок
+    Node *curr = head;
+    while (curr != nullptr) {
+        bool alreadyDone = false; //перевірка
+        Node* check = averagesList.head;
+        while (check != nullptr) {
+            if (check->data.postavjik == curr->data.postavjik) {
+                alreadyDone = true;
+                break;
+            }
+            check = check->pNext;
+        }
+
+        if (alreadyDone) {
+            curr = curr->pNext; //оснрвний файл, нова іграшка
+            continue; //скіп логікі
+        }
+        double sum = 0;
+        int count = 0;
+
+        Node *runner = curr; //тєкущій елемент
+        while (runner != nullptr) {
+           if (curr->data.postavjik == runner->data.postavjik) {
+                sum += runner->data.price;
+                count++;
+            }
+            runner = runner->pNext;
+        }
+
+            Toy avgToy;
+            avgToy.postavjik = curr->data.postavjik;
+            avgToy.price = sum / count; //середнє
+            avgToy.name = "______-----";
+
+            averagesList.push_back(avgToy);
+
+        curr = curr->pNext;
+    }
+
+    cout << "--- Список цін ---" << endl;
+    averagesList.print();
+}
+
+void LinkedListt::dop_igr() const {
     if (head == nullptr) {
         return;
     }
     Node *curr = head;
-    Node *next = head->pNext;
-    while (next != nullptr) {
-
+    while (curr != nullptr) {
+        Node *next = curr->pNext;
+        while (next != nullptr) {
+            if (curr->data.name == next->data.name) {
+                if (curr->data.price > next->data.price) {
+                    cout << "Іграшка: "<< next->data.name <<" У поставщика " << next->data.postavjik << " ціна дешевше: " << next->data.price << endl;
+                }
+                else if (curr->data.price < next->data.price) {
+                    cout << "Іграшка: "<< curr->data.name <<"У поставщика " << curr->data.postavjik << " ціна дешевше: " << curr->data.price << endl;
+                }
+                else {
+                    cout << "Ціни однакові" << endl;
+                }
+            }
+            next = next->pNext;
+        }
+        curr = curr->pNext;
     }
+    cout << "----------------------------------------------------" << endl;
+    cout << "Всі іграшки: " << endl;
+    print();
 }
 
 
@@ -350,6 +418,8 @@ int main() {
         cout << "5. Сортування за датою надходження, потім за ціною" << endl;
         cout << "6. Вивести іграшки, що надійшли ПІСЛЯ конкретної дати." << endl;
         cout << "7. Видалити весь список" << endl;
+        cout << "8. Доп." << endl;
+        cout << "9. DDOP"<< endl;
         cout << "----------------------------------------------------" << endl;
         cout << "0. Вийти" << endl;
 
@@ -402,7 +472,6 @@ int main() {
                             break;
                             default:
                             exit(-1);
-                            break;
                     }
                 }
                 break;
@@ -488,7 +557,6 @@ int main() {
 
                             default:
                             exit(-1);
-                            break;
                     }
                 }
                 break;
@@ -582,9 +650,21 @@ int main() {
                 break;
 
 
+                case '8':
+                cout << "----------------------------------------------------" << endl;
+                list.seredina();
+                cout << "----------------------------------------------------" << endl;
+                break;
+
+            case '9':
+                cout << "----------------------------------------------------" << endl;
+                list.dop_igr();
+                cout << "----------------------------------------------------" << endl;
+                break;
+
                 default:
                 exit(-1);
-                break;
+
         }
 
     } while(coi != '0');
