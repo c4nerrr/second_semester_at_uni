@@ -147,6 +147,65 @@ void Graf_Realise::vved_() {
     cout << "Готово!" << endl;
 }
 
+void Graf_Realise::BFS_ignore(const int startVertex, const int ignoreVertex) const {
+    if (startVertex == ignoreVertex) {
+        cout << "Помилка: не можна стартувати з вершини, яку ми ігноруємо!" << endl;
+        return;
+    }
+
+    vector<bool> visited(id_, false);
+    vector<int> wave(id_, -1);
+
+    if (ignoreVertex >= 0 && ignoreVertex < id_) {
+        visited[ignoreVertex] = true;
+    }
+
+    queue<int> queue;
+
+    queue.push(startVertex);
+    visited[startVertex] = true; wave[startVertex] = 0;
+    while (!queue.empty()) {
+        const int temp = queue.front(); queue.pop();
+        cout << "Вершина: " << temp << "|  Хвиля: " << wave[temp] << endl;
+
+        for (int neighbor : neighbours_[temp]) {
+            if (!visited[neighbor]) {
+                visited[neighbor] = true; wave[neighbor] = wave[temp] + 1;
+                queue.push(neighbor);
+            }
+        }
+    }
+}
+
+void Graf_Realise::DFS_ignore(const int startVertex, const int ignoreVertex) const {
+    if (startVertex == ignoreVertex) {
+        cout << "Помилка: не можна стартувати з вершини, яку ми ігноруємо!" << endl;
+        return;
+    }
+
+    vector<bool> visited(id_, false);
+
+    if (ignoreVertex >= 0 && ignoreVertex < id_) {
+        visited[ignoreVertex] = true;
+    }
+
+    stack<int> staKK;
+    staKK.push(startVertex);
+    visited[startVertex] = true;
+    while (!staKK.empty()) {
+        const int temp = staKK.top(); staKK.pop();
+        cout << "Вершина (пошук вглибину) : " << temp << endl;
+
+        for (int neighbor : neighbours_[temp]) {
+            if (!visited[neighbor]) {
+                visited[neighbor] = true;
+                staKK.push(neighbor);
+            }
+        }
+    }
+}
+
+
 void Graf_Realise::DFS_helper(const int vertex, std::vector<bool> &visited) const {
     stack<int> staKK;
     staKK.push(vertex);
@@ -223,6 +282,7 @@ int main() {
                 cout << "Нову порожню вершину додано в кінець!" << endl;
                 break;
 
+
             case '6': {
                 int v;
                 cout << "Введіть вершину для ВИДАЛЕННЯ -> ";
@@ -233,18 +293,50 @@ int main() {
             }
 
             case '7': {
-                int start;
+                /*int start;
                 cout << "Стартова вершина для BFS -> ";
                 cin >> start;
                 GRaF.BFS(start);
+                break;*/
+                int start;
+                char choice;
+                cout << "Стартова вершина для BFS -> ";
+                cin >> start;
+                cout << "Бажаєте проігнорувати якусь вершину? (y/n) -> ";
+                cin >> choice;
+
+                if (choice == 'y' || choice == 'Y') {
+                    int ignore_v;
+                    cout << "Введіть вершину для ІГНОРУ -> ";
+                    cin >> ignore_v;
+                    GRaF.BFS_ignore(start, ignore_v);
+                } else {
+                    GRaF.BFS(start);
+                }
                 break;
             }
 
             case '8': {
-                int start;
+                /*int start;
                 cout << "Стартова вершина для DFS -> ";
                 cin >> start;
                 GRaF.DFS(start);
+                break;*/
+                int start;
+                char choice;
+                cout << "Стартова вершина для DFS -> ";
+                cin >> start;
+                cout << "Бажаєте проігнорувати якусь вершину? (y/n) -> ";
+                cin >> choice;
+
+                if (choice == 'y' || choice == 'Y') {
+                    int ignore_v;
+                    cout << "Введіть вершину для ІГНОРУ -> ";
+                    cin >> ignore_v;
+                    GRaF.DFS_ignore(start, ignore_v);
+                } else {
+                    GRaF.DFS(start);
+                }
                 break;
             }
 
@@ -255,6 +347,8 @@ int main() {
             case '0':
 
                 break;
+
+
 
             default:
                 cout << "Невідома команда. Спробуй ще раз." << endl;
