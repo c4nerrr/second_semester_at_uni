@@ -135,29 +135,133 @@ void GDAF::bell_ford_alg(int start_vertex) const {
                 }
 
         }
-
-        for (int u = 0; u < id_; u++) {
-            if (lambdas[u] == INF) continue;
-            for (auto &[v, weight] : neib_[u]) {
-                if (lambdas[u] + weight < lambdas[v]) {
-                    cout << "Знайдено негативний цикл у графі!" << endl;
-                    return;
-                }
+    }
+    for (int u = 0; u < id_; u++) {
+        if (lambdas[u] == INF) continue;
+        for (auto &[v, weight] : neib_[u]) {
+            if (lambdas[u] + weight < lambdas[v]) {
+                cout << "Знайдено негативний цикл у графі!" << endl;
+                return;
             }
         }
-
     }
 }
 
 void GDAF::floid_yorshell_alg() const {
+    vector<vector<int>> matrix(id_, vector<int>(id_, INF));
+    for (int i = 0; i < id_; i++) {
+        matrix[i][i] = 0;
+            for (auto &[v, weight] : neib_[i]) {
+                matrix[i][v] = weight;
+        }
+    }
+    for (int k = 0; k < id_; k++) {
+        for (int i = 0; i < id_; i++) {
+            for (int j = 0; j < id_; j++) {
+                matrix[i][j] = min(matrix[i][j], matrix[i][k] + matrix[k][j]);
+            }
+        }
+    }
 }
 
 
-void GDAF::dop_13_v(int dist, int vershina) {
+void GDAF::dop_13_v(const int dist, const int vershina) const {
+    vector<int> SS1_dist(id_, INF);
+    SS1_dist = deqistri_alg(vershina);
+    for (int i = 0; i < id_; i++) {
+        if (dist >= SS1_dist[i] && SS1_dist[i] != INF) {
+            cout << i << " "  << endl;
+        }
+    }
 }
-
 
 int main() {
+    int initial_size;
+    cout << "Скільки вершин буде у графі зі старту? -> ";
+    cin >> initial_size;
+
+    GDAF GRaF(initial_size);
+    char oui = '9';
+
+    do {
+        cout << "\n=== Menu ===" << endl;
+        cout << "1. Вивести граф на екран (pri_graph)" << endl;
+        cout << "2. Заповнити граф ребрами з клавіатури (vve_)" << endl;
+        cout << "3. Завантажити граф з файлу (vvid_from_file)" << endl;
+        cout << "4. Додати ребро вручну (ply_g)" << endl;
+        cout << "5. Алгоритм Дейкстри" << endl;
+        cout << "6. Алгоритм Беллмана-Форда" << endl;
+        cout << "7. Алгоритм Флойда-Уоршелла" << endl;
+        cout << "8. Індив. завдання (Варіант 13: вершини на відстані <= K)" << endl;
+        cout << "0. Вихід" << endl;
+        cout << "Ваш вибір -> ";
+
+        cin >> oui;
+        cin.ignore();
+
+        switch (oui) {
+            case '1':
+                GRaF.pri_graph();
+                break;
+
+            case '2':
+                GRaF.vve_();
+                break;
+
+            case '3':
+                GRaF.vvid_from_file();
+                cout << "Граф успішно завантажено з файлу!" << endl;
+                break;
+
+            case '4': {
+                int u, v, weight;
+                // Не забудь, що граф зважений! Тому додаємо вагу.
+                cout << "Введіть дві вершини та вагу для з'єднання (через пробіл) -> ";
+                cin >> u >> v >> weight;
+                GRaF.ply_g(u, v, weight);
+                cout << "Ребро додано!" << endl;
+                break;
+            }
+
+            case '5': {
+                int start;
+                cout << "Стартова вершина для Дейкстри -> ";
+                cin >> start;
+                GRaF.deqistri_alg(start); //NOLINT
+                break;
+            }
+
+            case '6': {
+                int start;
+                cout << "Стартова вершина для Беллмана-Форда -> ";
+                cin >> start;
+                GRaF.bell_ford_alg(start);
+                break;
+            }
+
+            case '7':
+                GRaF.floid_yorshell_alg();
+                break;
+
+            case '8': {
+                int dist, start;
+                cout << "Введіть ліміт відстані (K) -> ";
+                cin >> dist;
+                cout << "Введіть стартову вершину (S) -> ";
+                cin >> start;
+                GRaF.dop_13_v(dist, start);
+                break;
+            }
+
+            case '0':
+                break;
+
+            default:
+                cout << "Невідома команда, машина. Спробуй ще раз." << endl;
+                break;
+        }
+
+    } while (oui != '0');
 
     return 0;
 }
